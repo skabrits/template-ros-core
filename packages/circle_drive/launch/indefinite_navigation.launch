@@ -28,7 +28,7 @@
 		<arg name="/coordination/implicit_coordination" value="false"/>
 		<arg name="/coordination/explicit_coordination" value="true"/>
 
-		<arg name="obstacle_avoidance_and_detection" value="true" />
+		<!--<arg name="obstacle_avoidance_and_detection" value="true" />-->
 
 	</include>
 </launch>

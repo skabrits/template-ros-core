@@ -7,4 +7,8 @@
 
 		<node name="circle_drive" pkg="circle_drive" type="circle_drive.py" output="screen" required="true"/>
 	</group>
+
+	<include file="$(find duckietown_demos)/launch/master.launch">
+		<arg name="/camera/raw" value="true"/>
+	</include>
 </launch>

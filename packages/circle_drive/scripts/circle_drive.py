@@ -35,8 +35,8 @@ from duckietown_msgs.msg import ObstacleImageDetection, ObstacleImageDetectionLi
 
 thread_lock = threading.Lock()
 
+rospy.init_node('static_object_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
-
 bridge = CvBridge()
 
 
@@ -171,5 +171,5 @@ def processImage(img):
     # rospy.spin()
 sub_image = rospy.Subscriber("~image_raw", Image, makeImageWithCones, queue_size=1)
 
-
+rospy.spin()
 

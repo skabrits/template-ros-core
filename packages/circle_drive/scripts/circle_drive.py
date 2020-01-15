@@ -41,6 +41,7 @@ bridge = CvBridge()
 
 
 def get_filtered_contours(img, contour_type):
+    rospy.loginfo("get_filtered_contours")
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     if contour_type == "CONE":
@@ -100,6 +101,8 @@ def get_filtered_contours(img, contour_type):
 
 def contour_match(img):
 
+    rospy.loginfo("contour_match")
+
     object_list = ObstacleImageDetectionList()
     object_list.list = []
 
@@ -137,12 +140,15 @@ def contour_match(img):
 
 
 def makeImageWithCones(img):
+    rospy.loginfo("makeImageWithCones")
+
     thread = threading.Thread(target=processImage, args=(img,))
     thread.setDaemon(True)
     thread.start()
 
 
 def processImage(img):
+    rospy.loginfo("processImage")
     if not thread_lock.acquire(False):
         return
     try:

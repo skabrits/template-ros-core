@@ -39,19 +39,23 @@ rospy.init_node('static_object_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 bridge = CvBridge()
 
+CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
+DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
+terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
+
 
 def get_filtered_contours(img, contour_type):
     rospy.loginfo("get_filtered_contours")
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     if contour_type == "CONE":
-        frame_threshed = cv2.inRange(hsv_img, self.CONE[0], self.CONE[1])
+        frame_threshed = cv2.inRange(hsv_img, CONE[0], CONE[1])
         ret, thresh = cv2.threshold(frame_threshed, 22, 255, 0)
     elif contour_type == "DUCK_COLOR":
-        frame_threshed = cv2.inRange(hsv_img, self.DUCK[0], self.DUCK[1])
+        frame_threshed = cv2.inRange(hsv_img, DUCK[0], DUCK[1])
         ret, thresh = cv2.threshold(frame_threshed, 30, 255, 0)
     elif contour_type == "DUCK_CANNY":
-        frame_threshed = cv2.inRange(hsv_img, self.DUCK[0], self.DUCK[1])
+        frame_threshed = cv2.inRange(hsv_img, DUCK[0], DUCK[1])
         frame_threshed = cv2.adaptiveThreshold(frame_threshed, 255,
                                                cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
         thresh = cv2.Canny(frame_threshed, 100, 200)
@@ -120,7 +124,7 @@ def contour_match(img):
             # plot box around contour
             x, y, w, h = box
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(img, self.terms[i], (x, y), font, 0.5, mean_color, 4)
+            cv2.putText(img, terms[i], (x, y), font, 0.5, mean_color, 4)
             cv2.rectangle(img, (x, y), (x + w, y + h), mean_color, 2)
 
             r = Rect()

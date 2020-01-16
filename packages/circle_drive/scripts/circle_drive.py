@@ -153,7 +153,7 @@ def processImage(img):
         return
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
-    except CvBridgeErrer as e:
+    except CvBridgeError as e:
         print(e)
     img, detections = contour_match(image_cv)
     detections.header.stamp = image_msg.header.stamp
@@ -175,7 +175,7 @@ def processImage(img):
     # node.run()
     # # keep spinning
     # rospy.spin()
-sub_image = rospy.Subscriber("camera_node/image/compressed", Image, makeImageWithCones, queue_size=1)
+sub_image = rospy.Subscriber("camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
 
 rospy.spin()
 

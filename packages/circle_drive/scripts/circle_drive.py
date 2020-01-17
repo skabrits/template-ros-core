@@ -104,14 +104,14 @@ def get_filtered_contours(img, contour_type):
         aspect_ratio = float(w) / h
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
     rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
-    if len(filtered_contours) > 0 and not stopped:
+    # global stopped
+    if len(filtered_contours) > 0:
         rospy.loginfo("duck detected, stopping")
         msg = Twist2DStamped()
         msg.v = 0.0
         msg.omega = 0.0
         pub_move.publish(msg)
-        global stopped
-        stopped = True
+        # stopped = True
 
     return filtered_contours
 

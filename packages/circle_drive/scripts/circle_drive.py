@@ -41,7 +41,7 @@ pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
 bridge = CvBridge()
 
-CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
+# CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
 DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
 terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
 
@@ -136,10 +136,10 @@ def contour_match(img):
     object_list.imheight = height
 
     # get filtered contours
-    cone_contours = get_filtered_contours(img, "CONE")
+    # cone_contours = get_filtered_contours(img, "CONE")
     duck_contours = get_filtered_contours(img, "DUCK_COLOR")
 
-    all_contours = [duck_contours, cone_contours]
+    all_contours = [duck_contours]
     for i, contours in enumerate(all_contours):
         for (cnt, box, ds, aspect_ratio, mean_color) in contours:
             # plot box around contour
@@ -161,8 +161,8 @@ def contour_match(img):
             d.bounding_box = r
             d.type = t
             object_list.list.append(d)
-    rospy.loginfo("duck_contours" + str(len(duck_contours)))
-    rospy.loginfo("object_list" + str(len(object_list.list)))
+    # rospy.loginfo("duck_contours" + str(len(duck_contours)))
+    # rospy.loginfo("object_list" + str(len(object_list.list)))
 
     return img, object_list
 

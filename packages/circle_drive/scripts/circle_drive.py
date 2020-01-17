@@ -181,7 +181,7 @@ def processImage(img):
     # # keep spinning
     # rospy.spin()
 
-sub_image = rospy.Subscriber("camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
+sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
 
 rospy.spin()
 

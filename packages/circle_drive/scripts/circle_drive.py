@@ -35,9 +35,13 @@ from duckietown_msgs.msg import ObstacleImageDetection, ObstacleImageDetectionLi
 
 thread_lock = threading.Lock()
 
-rospy.init_node('static_object_detector_node')
+rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 bridge = CvBridge()
+
+CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
+DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
+terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
 
 
 def get_filtered_contours(img, contour_type):
@@ -45,13 +49,13 @@ def get_filtered_contours(img, contour_type):
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     if contour_type == "CONE":
-        frame_threshed = cv2.inRange(hsv_img, self.CONE[0], self.CONE[1])
+        frame_threshed = cv2.inRange(hsv_img, CONE[0], CONE[1])
         ret, thresh = cv2.threshold(frame_threshed, 22, 255, 0)
     elif contour_type == "DUCK_COLOR":
-        frame_threshed = cv2.inRange(hsv_img, self.DUCK[0], self.DUCK[1])
+        frame_threshed = cv2.inRange(hsv_img, DUCK[0], DUCK[1])
         ret, thresh = cv2.threshold(frame_threshed, 30, 255, 0)
     elif contour_type == "DUCK_CANNY":
-        frame_threshed = cv2.inRange(hsv_img, self.DUCK[0], self.DUCK[1])
+        frame_threshed = cv2.inRange(hsv_img, DUCK[0], DUCK[1])
         frame_threshed = cv2.adaptiveThreshold(frame_threshed, 255,
                                                cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 2)
         thresh = cv2.Canny(frame_threshed, 100, 200)
@@ -60,7 +64,7 @@ def get_filtered_contours(img, contour_type):
 
     filtered_contours = []
 
-    contours, hierarchy = cv2.findContours(
+    smth, contours, hierarchy = cv2.findContours(
         thresh, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
     contour_area = [(cv2.contourArea(c), (c)) for c in contours]
     contour_area = sorted(contour_area, reverse=True, key=lambda x: x[0])
@@ -96,6 +100,7 @@ def get_filtered_contours(img, contour_type):
         mean_val = cv2.mean(img, mask=mask)
         aspect_ratio = float(w) / h
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
+    rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
     return filtered_contours
 
 
@@ -120,7 +125,7 @@ def contour_match(img):
             # plot box around contour
             x, y, w, h = box
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(img, self.terms[i], (x, y), font, 0.5, mean_color, 4)
+            cv2.putText(img, terms[i], (x, y), font, 0.5, mean_color, 4)
             cv2.rectangle(img, (x, y), (x + w, y + h), mean_color, 2)
 
             r = Rect()
@@ -136,11 +141,14 @@ def contour_match(img):
             d.bounding_box = r
             d.type = t
             object_list.list.append(d)
+    rospy.loginfo("duck_contours", len(duck_contours))
+    rospy.loginfo("object_list", len(object_list.list))
+
     return img, object_list
 
 
 def makeImageWithCones(img):
-    rospy.loginfo("makeImageWithCones")
+    # rospy.loginfo("makeImageWithCones")
 
     thread = threading.Thread(target=processImage, args=(img,))
     thread.setDaemon(True)
@@ -148,24 +156,24 @@ def makeImageWithCones(img):
 
 
 def processImage(img):
+    # if not thread_lock.acquire(False):
+    #     return
     rospy.loginfo("processImage")
-    if not thread_lock.acquire(False):
-        return
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
-    except CvBridgeErrer as e:
-        print(e)
+    except CvBridgeError as e:
+        rospy.loginfo(e)
     img, detections = contour_match(image_cv)
-    detections.header.stamp = image_msg.header.stamp
-    detections.header.frame_id = image_msg.header.frame_id
+    # detections.header.stamp = image_msg.header.stamp
+    # detections.header.frame_id = image_msg.header.frame_id
     # self.pub_detections_list.publish(detections)
     # height, width = img.shape[:2]
     try:
         pub_image.publish(bridge.cv2_to_imgmsg(img, "bgr8"))
     except CvBridgeError as e:
-        print(e)
+        rospy.loginfo(e)
 
-    thread_lock.release()
+    # thread_lock.release()
 
 
 # if __name__ == '__main__':
@@ -175,7 +183,8 @@ def processImage(img):
     # node.run()
     # # keep spinning
     # rospy.spin()
-sub_image = rospy.Subscriber("camera_node/image/compressed", Image, makeImageWithCones, queue_size=1)
+
+sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
 
 rospy.spin()
 

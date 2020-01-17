@@ -100,7 +100,7 @@ def get_filtered_contours(img, contour_type):
         mean_val = cv2.mean(img, mask=mask)
         aspect_ratio = float(w) / h
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
-    rospy.loginfo("number of ducks: ", len(filtered_contours))
+    rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
     return filtered_contours
 
 

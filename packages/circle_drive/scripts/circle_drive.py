@@ -8,7 +8,7 @@ import threading
 from duckietown import DTROS
 from duckietown_msgs.msg import Twist2DStamped
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, Joy
 from duckietown_msgs.msg import ObstacleImageDetection, ObstacleImageDetectionList, ObstacleType, Rect, BoolStamped
 
 
@@ -37,14 +37,15 @@ thread_lock = threading.Lock()
 
 rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
-pub_move = rospy.Publisher("~car_cmd", Twist2DStamped, queue_size=1)
+# pub_move = rospy.Publisher("~car_cmd", Twist2DStamped, queue_size=1)
+pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
 bridge = CvBridge()
 
 CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
 DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
 terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
 
-stopped = False
+stop_time = -1
 
 
 def get_filtered_contours(img, contour_type):
@@ -107,10 +108,15 @@ def get_filtered_contours(img, contour_type):
     # global stopped
     if len(filtered_contours) > 0:
         rospy.loginfo("duck detected, stopping")
-        msg = Twist2DStamped()
-        msg.v = 0.0
-        msg.omega = 0.0
-        pub_move.publish(msg)
+        msg = Joy()
+        msg.header.seq = 0
+        msg.header.stamp.secs = 0
+        msg.header.stamp.nsecs = 0
+        msg.header.frame_id = ''
+        msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        msg.buttons[6] = 1
+        pub_stop.publish(msg)
         # stopped = True
 
     return filtered_contours

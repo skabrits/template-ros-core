@@ -141,8 +141,8 @@ def contour_match(img):
             d.bounding_box = r
             d.type = t
             object_list.list.append(d)
-    rospy.loginfo("duck_contours", len(duck_contours))
-    rospy.loginfo("object_list", len(object_list.list))
+    rospy.loginfo("duck_contours" + str(len(duck_contours)))
+    rospy.loginfo("object_list" + str(len(object_list.list)))
 
     return img, object_list
 

@@ -156,8 +156,8 @@ def makeImageWithCones(img):
 
 
 def processImage(img):
-    if not thread_lock.acquire(False):
-        return
+    # if not thread_lock.acquire(False):
+    #     return
     rospy.loginfo("processImage")
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
@@ -173,7 +173,7 @@ def processImage(img):
     except CvBridgeError as e:
         rospy.loginfo(e)
 
-    thread_lock.release()
+    # thread_lock.release()
 
 
 # if __name__ == '__main__':

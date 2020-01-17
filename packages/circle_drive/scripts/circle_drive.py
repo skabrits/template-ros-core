@@ -77,6 +77,8 @@ def get_filtered_contours(img, contour_type):
     for (area, (cnt)) in contour_area:
         # plot box around contour
         x, y, w, h = cv2.boundingRect(cnt)
+        if x < width/2:
+            continue
         box = (x, y, w, h)
         d = 0.5 * (x - width / 2) ** 2 + (y - height) ** 2
         if not (h > 15 and w > 10 and h < 200 and w < 200 and d < 120000):

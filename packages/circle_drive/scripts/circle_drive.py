@@ -109,7 +109,7 @@ def get_filtered_contours(img, contour_type):
         msg = Twist2DStamped()
         msg.v = 0.0
         msg.omega = 0.0
-        self.pub.publish(msg)
+        pub_move.publish(msg)
         global stopped
         stopped = True
 

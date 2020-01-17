@@ -141,11 +141,14 @@ def contour_match(img):
             d.bounding_box = r
             d.type = t
             object_list.list.append(d)
+    rospy.loginfo("duck_contours", len(duck_contours))
+    rospy.loginfo("object_list", len(object_list.list))
+    
     return img, object_list
 
 
 def makeImageWithCones(img):
-    rospy.loginfo("makeImageWithCones")
+    # rospy.loginfo("makeImageWithCones")
 
     thread = threading.Thread(target=processImage, args=(img,))
     thread.setDaemon(True)
@@ -153,9 +156,9 @@ def makeImageWithCones(img):
 
 
 def processImage(img):
-    rospy.loginfo("processImage")
     if not thread_lock.acquire(False):
         return
+    rospy.loginfo("processImage")
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
     except CvBridgeError as e:

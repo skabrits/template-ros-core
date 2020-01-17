@@ -99,6 +99,8 @@ def get_filtered_contours(img, contour_type):
             if val < 1.12: continue
             # if area > 1000: continue
 
+        rospy.loginfo('duck shape: ' + str(w) + " " + str(h))
+
         mask = np.zeros(thresh.shape, np.uint8)
         cv2.drawContours(mask, [cnt], 0, 255, -1)
         mean_val = cv2.mean(img, mask=mask)

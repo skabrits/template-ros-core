@@ -5,6 +5,19 @@ import math
 
 
 roadId = 0
+R1 = None
+r1 = None
+R2 = None
+r2 = None
+R3 = None
+r3 = None
+R4 = None
+r4 = None
+R5 = None
+r5 = None
+R6 = None
+r6 = None
+Rmap = None
 
 
 def calc_belong(circle_x, circle_y, x, y, is_smez=1):
@@ -289,115 +302,114 @@ class circle_road_left_down:
         return (self.next_x, self.next_y,self.sign)
 
 
+def init_lib():
+    segm = ['v','turnldb','h','h','h','turnrdb','v']
+    R1 = Road(0*utk_bot,6*utk_bot,segm,'-')
+    segm = ['v','turnldm','h','h','h','turnrdm','v']
+    r1 = Road(1.5*utk_bot,6*utk_bot,segm,'-',direct = -1)
+    segm = ['h','turnrub','v']
+    R2 = Road(9*utk_bot,15*utk_bot,segm,'+',direct = -1)
+    segm = ['h','turnrum','v']
+    r2 = Road(9*utk_bot,13.5*utk_bot,segm,'+')
+    segm = ['h']
+    R3 = Road(9*utk_bot,9*utk_bot,segm,'+', direct = -1)
+    r3 = Road(9*utk_bot,7.5*utk_bot,segm,'+')
+    segm = ['v','turnlub','h']
+    R4 = Road(0*utk_bot,9*utk_bot,segm,'+',direct = -1)
+    segm = ['v','turnlum','h']
+    r4 = Road(1.5*utk_bot,9*utk_bot,segm,'+')
+    segm = ['v']
+    R5 = Road(6*utk_bot,12*utk_bot,segm,'-')
+    r5 = Road(7.5*utk_bot,12*utk_bot,segm,'-',direct = -1)
+    segm = ['h']
+    R6 = Road(3*utk_bot,9*utk_bot,segm,'+',direct = -1)
+    r6 = Road(3*utk_bot,7.5*utk_bot,segm,'+')
+    R1.Road1 = R2
+    R1.Road2 = R3
+    R2.Road1 = R4
+    R2.Road2 = R5
+    R3.Road1 = r5
+    R3.Road2 = R6
+    R4.Road1 = R1
+    R4.Road2 = r6
+    R5.Road1 = R6
+    R5.Road2 = r3
+    R6.Road1 = r4
+    R6.Road2 = R1
+    r1.Road1 = r6
+    r1.Road2 = r4
+    r2.Road1 = R3
+    r2.Road2 = r1
+    r3.Road1 = r1
+    r3.Road2 = R2
+    r4.Road1 = R5
+    r4.Road2 = r2
+    r5.Road1 = r2
+    r5.Road2 = R4
+    r6.Road1 = r3
+    r6.Road2 = r5
 
-segm = ['v','turnldb','h','h','h','turnrdb','v']
-R1 = Road(0*utk_bot,6*utk_bot,segm,'-')
-segm = ['v','turnldm','h','h','h','turnrdm','v']
-r1 = Road(1.5*utk_bot,6*utk_bot,segm,'-',direct = -1)
-segm = ['h','turnrub','v']
-R2 = Road(9*utk_bot,15*utk_bot,segm,'+',direct = -1)
-segm = ['h','turnrum','v']
-r2 = Road(9*utk_bot,13.5*utk_bot,segm,'+')
-segm = ['h']
-R3 = Road(9*utk_bot,9*utk_bot,segm,'+', direct = -1)
-r3 = Road(9*utk_bot,7.5*utk_bot,segm,'+')
-segm = ['v','turnlub','h']
-R4 = Road(0*utk_bot,9*utk_bot,segm,'+',direct = -1)
-segm = ['v','turnlum','h']
-r4 = Road(1.5*utk_bot,9*utk_bot,segm,'+')
-segm = ['v']
-R5 = Road(6*utk_bot,12*utk_bot,segm,'-')
-r5 = Road(7.5*utk_bot,12*utk_bot,segm,'-',direct = -1)
-segm = ['h']
-R6 = Road(3*utk_bot,9*utk_bot,segm,'+',direct = -1)
-r6 = Road(3*utk_bot,7.5*utk_bot,segm,'+')
-R1.Road1 = R2
-R1.Road2 = R3
-R2.Road1 = R4
-R2.Road2 = R5
-R3.Road1 = r5
-R3.Road2 = R6
-R4.Road1 = R1
-R4.Road2 = r6
-R5.Road1 = R6
-R5.Road2 = r3
-R6.Road1 = r4
-R6.Road2 = R1
-r1.Road1 = r6
-r1.Road2 = r4
-r2.Road1 = R3
-r2.Road2 = r1
-r3.Road1 = r1
-r3.Road2 = R2
-r4.Road1 = R5
-r4.Road2 = r2
-r5.Road1 = r2
-r5.Road2 = R4
-r6.Road1 = r3
-r6.Road2 = r5
+    Rmap = [R1,r1,R2,r2,R3,r3,R4,r4,R5,r5,R6,r6]
+    return Rmap,R1,r1,R2,r2,R3,r3,R4,r4,R5,r5,R6,r6
 
-
-
-min = -1
-min_route = []
-
-
-def findRoute(roadFrom, id_to, route):
-    l = route.__len__()
-    if roadFrom.id == id_to:
-        global min, min_route
-        if len(route) < min or min == -1:
-            min = len(route)
-            min_route = route[:]
-        return
-    if route.__len__() >= 10:
-        return
-    route.append(1)
-    tmp = route[:]
-    findRoute(roadFrom.Road1, id_to, route)
-    # print('tmp', l, tmp)
-    tmp[-1] = 2
-    route = tmp
-    findRoute(roadFrom.Road2, id_to, route)
-
-
-findRoute(R3, r3.id, [])
-
-print(min_route)
+def find_route(roadFrom, id_to):
+    mini = -1
+    min_route = []
+    def findRoute(roadFrom, id_to, route, mini, min_route):
+        l = route.__len__()
+        if roadFrom.id == id_to:
+            if len(route) < mini or mini == -1:
+                mini = len(route)
+                min_route = route[:]
+            return mini,min_route
+        if route.__len__() >= 10:
+            return mini,min_route
+        route.append(1)
+        tmp = route[:]
+        mini,min_route = findRoute(roadFrom.Road1, id_to, route,mini,min_route)
+        # print('tmp', l, tmp)
+        tmp[-1] = 2
+        route = tmp
+        mini,min_route = findRoute(roadFrom.Road2, id_to, route,mini,min_route)
+        return mini,min_route
+    mini,min_route = findRoute(roadFrom, id_to, [], mini, min_route)
+    return min_route
 
 
-c_road = None
-Rmap = [R1,r1,R2,r2,R3,r3,R4,r4,R5,r5,R6,r6]
-for road in Rmap:
-    if road.is_on_road(7.5*utk_bot,1.5*utk_bot):
-        c_road = road
 
-if c_road==None:
-    print("Not on the road")
-else:
-    print(c_road.id,"\n\n", c_road.segments)
-
-cord = [(x/10*utk_bot,y/10*utk_bot) for x in range(150) for y in range(150)]
-j = 0
-# print(cord)
-while j < len(cord):
-    should_d = True
+def det_points_road(x,y):
+    c_road = None
 
     for road in Rmap:
-        if j >= len(cord):
-            break
-        if road.is_on_road(cord[j][0],cord[j][1]):
-            should_d = False
-    if should_d:
-        cord.pop(j)
+        if road.is_on_road(7.5*utk_bot,1.5*utk_bot):
+            c_road = road
+
+    if c_road==None:
+        return "Not on the road"
     else:
-        j += 1
-print (cord)
-print((13*utk_bot,12*utk_bot) in set(cord))
-print((13*utk_bot,12*utk_bot))
-import  matplotlib.pyplot as plt
-xes = [x for x,y in cord]
-yes = [y for x,y in cord]
-plt.plot(xes,yes,'bs')
-plt.show()
-print(r1.get_route_len(220,50))
+      return c_road.id, c_road.segments
+
+# cord = [(x/10*utk_bot,y/10*utk_bot) for x in range(150) for y in range(150)]
+# j = 0
+# print(cord)
+# while j < len(cord):
+#     should_d = True
+#
+#     for road in Rmap:
+#         if j >= len(cord):
+#             break
+#         if road.is_on_road(cord[j][0],cord[j][1]):
+#             should_d = False
+#     if should_d:
+#         cord.pop(j)
+#     else:
+#         j += 1
+# print (cord)
+# print((13*utk_bot,12*utk_bot) in set(cord))
+# print((13*utk_bot,12*utk_bot))
+# import  matplotlib.pyplot as plt
+# xes = [x for x,y in cord]
+# yes = [y for x,y in cord]
+# plt.plot(xes,yes,'bs')
+# plt.show()
+# print(r1.get_route_len(220,50))

@@ -143,7 +143,7 @@ def contour_match(img):
             object_list.list.append(d)
     rospy.loginfo("duck_contours", len(duck_contours))
     rospy.loginfo("object_list", len(object_list.list))
-    
+
     return img, object_list
 
 
@@ -162,16 +162,16 @@ def processImage(img):
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
     except CvBridgeError as e:
-        print(e)
+        rospy.loginfo(e)
     img, detections = contour_match(image_cv)
-    detections.header.stamp = image_msg.header.stamp
-    detections.header.frame_id = image_msg.header.frame_id
+    # detections.header.stamp = image_msg.header.stamp
+    # detections.header.frame_id = image_msg.header.frame_id
     # self.pub_detections_list.publish(detections)
     # height, width = img.shape[:2]
     try:
         pub_image.publish(bridge.cv2_to_imgmsg(img, "bgr8"))
     except CvBridgeError as e:
-        print(e)
+        rospy.loginfo(e)
 
     thread_lock.release()
 

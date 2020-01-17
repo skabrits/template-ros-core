@@ -37,15 +37,18 @@ thread_lock = threading.Lock()
 
 rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
+pub_move = rospy.Publisher("~car_cmd", Twist2DStamped, queue_size=1)
 bridge = CvBridge()
 
 CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
 DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
 terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
 
+stopped = False
+
 
 def get_filtered_contours(img, contour_type):
-    rospy.loginfo("get_filtered_contours")
+    # rospy.loginfo("get_filtered_contours")
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     if contour_type == "CONE":
@@ -101,12 +104,21 @@ def get_filtered_contours(img, contour_type):
         aspect_ratio = float(w) / h
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
     rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
+    if len(filtered_contours) > 0 and not stopped:
+        rospy.loginfo("duck detected, stopping")
+        msg = Twist2DStamped()
+        msg.v = 0.0
+        msg.omega = 0.0
+        self.pub.publish(msg)
+        global stopped
+        stopped = True
+
     return filtered_contours
 
 
 def contour_match(img):
 
-    rospy.loginfo("contour_match")
+    # rospy.loginfo("contour_match")
 
     object_list = ObstacleImageDetectionList()
     object_list.list = []
@@ -158,7 +170,7 @@ def makeImageWithCones(img):
 def processImage(img):
     # if not thread_lock.acquire(False):
     #     return
-    rospy.loginfo("processImage")
+    # rospy.loginfo("processImage")
     try:
         image_cv = bridge.imgmsg_to_cv2(img, "bgr8")
     except CvBridgeError as e:

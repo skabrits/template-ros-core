@@ -38,7 +38,7 @@ thread_lock = threading.Lock()
 rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
-pub_route = rospy.Publisher("/route", np.nparray, queue_size=1)
+# pub_route = rospy.Publisher("/route", np.nparray, queue_size=1)
 bridge = CvBridge()
 
 # CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
@@ -213,7 +213,7 @@ def makeTurn(nparray):
     # rospy.spin()
 
 sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
-sub_turn = rospy.Subscriber("/turn", np.array, makeTurn, queue_size=1)
+# sub_turn = rospy.Subscriber("/turn", np.array, makeTurn, queue_size=1)
 
 rospy.spin()
 

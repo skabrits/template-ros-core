@@ -27,14 +27,14 @@ class RandomAprilTagTurnsNode(object):
         # self.pub_topic_a = rospy.Publisher("~topic_a",String, queue_size=1)
         self.pub_turn_type = rospy.Publisher("~turn_type",Int16, queue_size=1, latch=True)
         self.pub_id_and_type = rospy.Publisher("~turn_id_and_type",TurnIDandType, queue_size=1, latch=True)
-        # self.pub_turn = rospy.Publisher("/turn",numpy.array, queue_size=1, latch=True)
+        self.pub_turn = rospy.Publisher("/turn", String, queue_size=1)
 
         # Setup subscribers
         # self.sub_topic_b = rospy.Subscriber("~topic_b", String, self.cbTopic)
         self.sub_topic_mode = rospy.Subscriber("~mode", FSMState, self.cbMode, queue_size=1)
         #self.fsm_mode = None #TODO what is this?
         self.sub_topic_tag = rospy.Subscriber("~tag", AprilTagsWithInfos, self.cbTag, queue_size=1)
-        # self.sub_route = rospy.Subscriber("/route", numpy.array, self.setRoute, queue_size=1)
+        self.sub_route = rospy.Subscriber("/route", String, self.setRoute, queue_size=1)
 
         # Read parameters
         self.pub_timestep = self.setupParameter("~pub_timestep", 1.0)
@@ -45,8 +45,11 @@ class RandomAprilTagTurnsNode(object):
 
         self.rate = rospy.Rate(30)  # 10hz
 
-    def setRoute(self, nparray):
-        self.route = nparray
+    def setRoute(self, string):
+        r = [0] * len(string)
+        for i in range(len(string)):
+            r[i] = string[i]
+        self.route = r
 
     def cbMode(self, mode_msg):
         #print mode_msg
@@ -92,10 +95,10 @@ class RandomAprilTagTurnsNode(object):
                     if len(self.route) == 0:
                         randomIndex = numpy.random.randint(len(availableTurns)) # по часовой
                         chosenTurn = availableTurns[randomIndex]
-                        # if randomIndex == 1:
-                            # self.pub_turn.publish(np.array([1]))
-                        # if randomIndex == 0:
-                        #     self.pub_turn.publish(np.array([2]))
+                        if randomIndex == 1:
+                            self.pub_turn.publish("1")
+                        if randomIndex == 0:
+                            self.pub_turn.publish("2")
                     else:
                         chosenTurn = availableTurns[::-1][self.route[0]-1]
                         del self.route[0]

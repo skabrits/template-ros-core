@@ -10,6 +10,8 @@ from duckietown_msgs.msg import Twist2DStamped
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image, Joy
 from duckietown_msgs.msg import ObstacleImageDetection, ObstacleImageDetectionList, ObstacleType, Rect, BoolStamped
+from std_msgs.msg import String
+import Stem_graph as sg
 
 
 # class MyNode(DTROS):
@@ -38,7 +40,8 @@ thread_lock = threading.Lock()
 rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
-# pub_route = rospy.Publisher("/route", np.nparray, queue_size=1)
+pub_route = rospy.Publisher("/route", String, queue_size=1)
+pub_move = rospy.Publisher("~car_cmd", Twist2DStamped, queue_size=1)
 bridge = CvBridge()
 
 # CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
@@ -46,6 +49,14 @@ DUCK = [np.array(x, np.uint8) for x in [[25, 100, 150], [35, 255, 255]]]
 terms = {ObstacleType.CONE :"cone", ObstacleType.DUCKIE:"duck"}
 
 stop_time = -1
+stopped = False
+
+# initializing graph
+Rmap,R1,r1,R2,r2,R3,r3,R4,r4,R5,r5,R6,r6 = sg.init_lib()
+# print(sp.find_route(R3, r1.id))
+cur_road = R1
+x = -1.0
+y = -1.0
 
 
 def get_filtered_contours(img, contour_type):
@@ -109,8 +120,8 @@ def get_filtered_contours(img, contour_type):
         aspect_ratio = float(w) / h
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
     rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
-    # global stopped
-    if len(filtered_contours) > 0:
+    global stopped, x, y
+    if len(filtered_contours) > 0 and not stopped:
         rospy.loginfo("duck detected, stopping")
         msg = Joy()
         msg.header.seq = 0
@@ -122,8 +133,22 @@ def get_filtered_contours(img, contour_type):
         msg.buttons[6] = 1
         pub_stop.publish(msg)
 
+        msg = Twist2DStamped()
+        msg.v = 0.0
+        msg.omega = 0.0
+        pub_move.publish(msg)
 
-        # stopped = True
+        stopped = True
+        if x != -1.0:
+            road = sg.det_points_road(x, y, Rmap)
+            if road != 'Not on the road':
+                route = sg.find_route(cur_road, road.id)
+                s = ""
+                for i in range(route):
+                    s += route[i]
+                pub_route.publish(s)
+            else:
+                rospy.loginfo("WARNING: requested dot is not on the road")
 
     return filtered_contours
 
@@ -198,10 +223,31 @@ def processImage(img):
         rospy.loginfo(e)
 
 
-def makeTurn(nparray):
-    pass
+def makeTurn(string):
+    rospy.loginfo("making turn: " + string)
+    num = int(string)
+    global cur_road
+    if num == 1:
+        cur_road = cur_road.Road1
+    else:
+        cur_road = cur_road.Road2
 
-    # thread_lock.release()
+
+def getCoord(string):
+    s1, s2 = string.split(" ")
+    global x, y
+    x = float(s1)
+    y = float(s2)
+    if stopped:
+        road = sg.det_points_road(x, y, Rmap)
+        if road != 'Not on the road':
+            route = sg.find_route(cur_road, road.id)
+            s = ""
+            for i in range(route):
+                s += route[i]
+            pub_route.publish(s)
+        else:
+            rospy.loginfo("WARNING: requested dot is not on the road")
 
 
 # if __name__ == '__main__':
@@ -212,8 +258,10 @@ def makeTurn(nparray):
     # # keep spinning
     # rospy.spin()
 
+
 sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
-# sub_turn = rospy.Subscriber("/turn", np.array, makeTurn, queue_size=1)
+sub_turn = rospy.Subscriber("/turn", String, makeTurn, queue_size=1)
+sub_coord = rospy.Subscriber("/coord", String, getCoord, queue_size=1)
 
 rospy.spin()
 

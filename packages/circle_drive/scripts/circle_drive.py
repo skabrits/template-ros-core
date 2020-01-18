@@ -41,7 +41,7 @@ rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
 pub_route = rospy.Publisher("/route", String, queue_size=1)
-pub_move = rospy.Publisher("~car_cmd", Twist2DStamped, queue_size=1)
+pub_move = rospy.Publisher("/duckpi4/car_cmd", Twist2DStamped, queue_size=1)
 bridge = CvBridge()
 
 # CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]

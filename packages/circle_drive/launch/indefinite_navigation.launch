@@ -32,4 +32,5 @@
 
 	</include>
 	<node name="circle_drive" pkg="circle_drive" type="circle_drive.py" output="screen" 			required="true"/>
+	<node name="client" pkg="circle_drive" type="Client_node.py" output="screen" required="true"/>
 </launch>

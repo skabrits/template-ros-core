@@ -382,8 +382,8 @@ def init_lib():
     r6.Road1 = r3
     r6.Road2 = r5
 
-    self.Rmap = [R1, r1, R2, r2, R3, r3, R4, r4, R5, r5, R6, r6]
-    return self.Rmap, R1, r1, R2, r2, R3, r3, R4, r4, R5, r5, R6, r6
+    Rmap = [R1, r1, R2, r2, R3, r3, R4, r4, R5, r5, R6, r6]
+    return Rmap, R1, r1, R2, r2, R3, r3, R4, r4, R5, r5, R6, r6
 
 
 def find_route(roadFrom, id_to):

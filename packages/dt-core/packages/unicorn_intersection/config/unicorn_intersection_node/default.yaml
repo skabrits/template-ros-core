@@ -1,6 +1,6 @@
-time_left_turn: 3.7
-time_straight_turn: 4
-time_right_turn: 2
+time_left_turn: 4.5
+time_straight_turn: 8
+time_right_turn: 2.5
 
 ff_left: 0.4
 ff_straight: 0

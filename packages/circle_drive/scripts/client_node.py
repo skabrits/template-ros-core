@@ -3,7 +3,7 @@ import asyncio
 
 import rospy
 from std_msgs.msg import String
-rospy.init_node('Server_c')
+rospy.init_node('server_c')
 pub=rospy.Publisher('/coord',String,queue_size=1)
 sleep(1)
 

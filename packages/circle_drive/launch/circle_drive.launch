@@ -6,6 +6,7 @@
 		<!--<remap from="circle_drive/car_cmd" to="joy_mapper_node/car_cmd"/>-->
 
 		<node name="circle_drive" pkg="circle_drive" type="circle_drive.py" output="screen" required="true"/>
+		<node name="client" pkg="circle_drive" type="Client_node.py" output="screen" required="true"/>
 	</group>
 
 	<include file="$(find duckietown_demos)/launch/master.launch">

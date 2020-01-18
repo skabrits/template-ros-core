@@ -41,7 +41,7 @@ rospy.init_node('duck_detector_node')
 pub_image = rospy.Publisher("~cone_detection_image", Image, queue_size=1)
 pub_stop = rospy.Publisher("/duckpi4/joy", Joy, queue_size=1)
 pub_route = rospy.Publisher("/route", String, queue_size=1)
-pub_move = rospy.Publisher("/duckpi4/car_cmd", Twist2DStamped, queue_size=1)
+pub_move = rospy.Publisher("/duckpi4/coordinator_node/car_cmd", Twist2DStamped, queue_size=1)
 bridge = CvBridge()
 
 # CONE = [np.array(x, np.uint8) for x in [[0, 80, 80], [22, 255, 255]]]
@@ -121,7 +121,7 @@ def get_filtered_contours(img, contour_type):
         filtered_contours.append((cnt, box, d, aspect_ratio, mean_val))
     rospy.loginfo("number of ducks: " + str(len(filtered_contours)))
     global stopped, x, y
-    if len(filtered_contours) > 0 and not stopped:
+    if len(filtered_contours) > 0:
         rospy.loginfo("duck detected, stopping")
         msg = Joy()
         msg.header.seq = 0

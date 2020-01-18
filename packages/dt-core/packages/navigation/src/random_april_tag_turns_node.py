@@ -34,7 +34,7 @@ class RandomAprilTagTurnsNode(object):
         self.sub_topic_mode = rospy.Subscriber("~mode", FSMState, self.cbMode, queue_size=1)
         #self.fsm_mode = None #TODO what is this?
         self.sub_topic_tag = rospy.Subscriber("~tag", AprilTagsWithInfos, self.cbTag, queue_size=1)
-        self.sub_route = rospy.Subscriber("/route", numpy.array, self.setRoute, queue_size=1)
+        # self.sub_route = rospy.Subscriber("/route", numpy.array, self.setRoute, queue_size=1)
 
         # Read parameters
         self.pub_timestep = self.setupParameter("~pub_timestep", 1.0)
@@ -92,10 +92,10 @@ class RandomAprilTagTurnsNode(object):
                     if len(self.route) == 0:
                         randomIndex = numpy.random.randint(len(availableTurns)) # по часовой
                         chosenTurn = availableTurns[randomIndex]
-                        if randomIndex == 1:
-                            self.pub_turn.publish(np.array([1]))
-                        if randomIndex == 0:
-                            self.pub_turn.publish(np.array([2]))
+                        # if randomIndex == 1:
+                            # self.pub_turn.publish(np.array([1]))
+                        # if randomIndex == 0:
+                        #     self.pub_turn.publish(np.array([2]))
                     else:
                         chosenTurn = availableTurns[::-1][self.route[0]-1]
                         del self.route[0]

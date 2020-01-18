@@ -83,12 +83,15 @@ class RandomAprilTagTurnsNode(object):
                 #go through possible intersection types
                 signType = taginfo.traffic_sign_type
                 if(signType == taginfo.NO_RIGHT_TURN or signType == taginfo.LEFT_T_INTERSECT):
+                    rospy.loginfo("left T")
                     availableTurns = [0,1] # these mystical numbers correspond to the array ordering in open_loop_intersection_control_node (very bad)
                 elif (signType == taginfo.NO_LEFT_TURN or signType == taginfo.RIGHT_T_INTERSECT):
+                    rospy.loginfo("right T")
                     availableTurns = [1,2]
                 elif (signType== taginfo.FOUR_WAY):
                     availableTurns = [0,1,2]
                 elif (signType == taginfo.T_INTERSECTION):
+                    rospy.loginfo("center T")
                     availableTurns = [0,2]
 
                     #now randomly choose a possible direction
@@ -111,7 +114,7 @@ class RandomAprilTagTurnsNode(object):
                     id_and_type_msg.turn_type = self.turn_type
                     self.pub_id_and_type.publish(id_and_type_msg)
 
-                    #rospy.loginfo("possible turns %s." %(availableTurns))
+                    rospy.loginfo("possible turns %s." %(availableTurns))
                     #rospy.loginfo("Turn type now: %i" %(self.turn_type))
 
     def setupParameter(self,param_name,default_value):

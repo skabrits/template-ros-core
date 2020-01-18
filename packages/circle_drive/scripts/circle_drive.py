@@ -224,7 +224,8 @@ def processImage(img):
 
 
 def makeTurn(string):
-    rospy.loginfo("making turn: " + string)
+    rospy.loginfo("making turn: " + str(string))
+    string = str(string)
     num = int(string)
     global cur_road
     if num == 1:

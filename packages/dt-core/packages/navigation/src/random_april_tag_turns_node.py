@@ -6,9 +6,16 @@ import numpy
 from duckietown_msgs.msg import FSMState, AprilTagsWithInfos, BoolStamped, TurnIDandType
 from std_msgs.msg import String, Int16 #Imports msg
 import math
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.append('/../../../../circle_drive/scripts/Stem_graph.py')
+import Stem_graph as sg
 
 class RandomAprilTagTurnsNode(object):
     def __init__(self):
+        self.Rmap, self.R1, self.r1, self.R2, self.r2, self.R3, self.r3, self.R4, self.r4, self.R5, self.r5, self.R6, self.r6 = sg.init_lib()
+        self.cur_road = self.R1
+        self.route = []
         # Save the name of the node
         self.node_name = rospy.get_name()
         self.turn_type = -1
@@ -76,8 +83,16 @@ class RandomAprilTagTurnsNode(object):
 
                     #now randomly choose a possible direction
                 if(len(availableTurns)>0):
-                    randomIndex = 0 # индексация по часовой
-                    chosenTurn = availableTurns[randomIndex]
+                    if len(self.route) == 0:
+                        randomIndex = numpy.random.randint(len(availableTurns)) # по часовой
+                        chosenTurn = availableTurns[randomIndex]
+                        if randomIndex == 1:
+                            self.cur_road = self.cur_road.Road1
+                        if randomIndex == 0:
+                            self.cur_road = self.cur_road.Road2
+                    else:
+                        chosenTurn = availableTurns[::-1][self.route[0]-1]
+                        self.route.pop(0)
                     self.turn_type = chosenTurn
                     self.pub_turn_type.publish(self.turn_type)
 

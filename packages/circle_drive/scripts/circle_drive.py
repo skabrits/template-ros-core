@@ -131,6 +131,7 @@ def get_filtered_contours(img, contour_type):
         msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         msg.buttons[6] = 1
+        msg.axes[1] = -1
         pub_stop.publish(msg)
 
         msg = Twist2DStamped()

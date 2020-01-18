@@ -1,9 +1,8 @@
 import socket
-import asyncio
 
 import rospy
 from std_msgs.msg import String
-rospy.init_node('server_c')
+rospy.init_node('server_the_node')
 pub=rospy.Publisher('/coord',String,queue_size=1)
 sleep(1)
 
@@ -42,12 +41,12 @@ class Client:
 				msg.data = command[1] + " " + command[2]
 				pub.publish(msg)
 				
+				
 
             except Exception as ex:
                 rospy.loginfo("Closed due to the error\n", ex)
                 rospy.loginfo('Close the connection')
                 self.s.close()
-                await self.writer.wait_closed()
                 break
 
 c = Client(('172.31.1.147', 8080))

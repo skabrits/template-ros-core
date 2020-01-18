@@ -46,6 +46,7 @@ class RandomAprilTagTurnsNode(object):
         self.rate = rospy.Rate(30)  # 10hz
 
     def setRoute(self, string):
+        string = string.data
         r = [0] * len(string)
         for i in range(len(string)):
             r[i] = string[i]

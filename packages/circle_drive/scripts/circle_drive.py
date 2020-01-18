@@ -224,8 +224,8 @@ def processImage(img):
 
 
 def makeTurn(string):
-    rospy.loginfo("making turn: " + str(string))
-    string = str(string)
+    string = string.data
+    rospy.loginfo("making turn: " + string)
     num = int(string)
     global cur_road
     if num == 1:
@@ -235,6 +235,7 @@ def makeTurn(string):
 
 
 def getCoord(string):
+    string = string.data
     s1, s2 = string.split(" ")
     global x, y
     x = float(s1)

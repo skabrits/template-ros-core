@@ -115,7 +115,7 @@ class Road:
         for i, segment in enumerate(self.segments):
             result = segment.is_in_phragment(x, y)
             if not result:
-                length += segment.dlina()  # указание принадлежности к классу
+                length += segment.dlina()
             if result:
                 if self.segm_types[i] == 'v':
                     x_e = segment.base_x + segment.len / 2
@@ -235,6 +235,7 @@ class circle_road_right_down:
         return self.len
 
     def cord_next(self, sign):
+        self.sign = sign
         self.sign = '+'
         self.next_x = self.base_x + self.r1
         self.next_y = self.base_y + self.r1
@@ -261,6 +262,7 @@ class circle_road_right_upper:
         return self.len
 
     def cord_next(self, sign):
+        self.sign = sign
         self.sign = '-'
         self.next_x = self.base_x + self.r1
         self.next_y = self.base_y - self.r2
@@ -287,6 +289,7 @@ class circle_road_left_upper:
         return self.len
 
     def cord_next(self, sign):
+        self.sign = sign
         self.sign = '+'
         self.next_x = self.base_x + self.r2
         self.next_y = self.base_y + self.r2
@@ -313,6 +316,7 @@ class circle_road_left_down:
         return self.len
 
     def cord_next(self, sign):
+        self.sign = sign
         self.sign = '+'
         self.next_x = self.base_x + self.r2
         self.next_y = self.base_y - self.r1

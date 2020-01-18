@@ -121,6 +121,8 @@ def get_filtered_contours(img, contour_type):
         msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         msg.buttons[6] = 1
         pub_stop.publish(msg)
+
+
         # stopped = True
 
     return filtered_contours
@@ -195,6 +197,10 @@ def processImage(img):
     except CvBridgeError as e:
         rospy.loginfo(e)
 
+
+def makeTurn(nparray):
+    pass
+
     # thread_lock.release()
 
 
@@ -207,6 +213,7 @@ def processImage(img):
     # rospy.spin()
 
 sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
+sub_turn = rospy.Subscriber("/turn", np.array, makeTurn, queue_size=1)
 
 rospy.spin()
 

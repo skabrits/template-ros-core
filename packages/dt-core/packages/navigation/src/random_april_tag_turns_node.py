@@ -8,14 +8,15 @@ from std_msgs.msg import String, Int16 #Imports msg
 import math
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.append('/../../../../circle_drive/scripts/Stem_graph.py')
-import Stem_graph as sg
+# sys.path.append('/../../../../circle_drive/scripts/Stem_graph.py')
+# import Stem_graph as sg
+
 
 class RandomAprilTagTurnsNode(object):
     def __init__(self):
-        self.Rmap, self.R1, self.r1, self.R2, self.r2, self.R3, self.r3, self.R4, self.r4, self.R5, self.r5, self.R6, self.r6 = sg.init_lib()
-        self.cur_road = self.R1
-        self.route = []
+        # self.Rmap, self.R1, self.r1, self.R2, self.r2, self.R3, self.r3, self.R4, self.r4, self.R5, self.r5,
+        # self.R6, self.r6 = sg.init_lib() self.cur_road = self.R1
+        self.route = [1, 2]
         # Save the name of the node
         self.node_name = rospy.get_name()
         self.turn_type = -1
@@ -26,12 +27,14 @@ class RandomAprilTagTurnsNode(object):
         # self.pub_topic_a = rospy.Publisher("~topic_a",String, queue_size=1)
         self.pub_turn_type = rospy.Publisher("~turn_type",Int16, queue_size=1, latch=True)
         self.pub_id_and_type = rospy.Publisher("~turn_id_and_type",TurnIDandType, queue_size=1, latch=True)
+        self.pub_turn = rospy.Publisher("/turn",numpy.array, queue_size=1, latch=True)
 
         # Setup subscribers
         # self.sub_topic_b = rospy.Subscriber("~topic_b", String, self.cbTopic)
         self.sub_topic_mode = rospy.Subscriber("~mode", FSMState, self.cbMode, queue_size=1)
         #self.fsm_mode = None #TODO what is this?
         self.sub_topic_tag = rospy.Subscriber("~tag", AprilTagsWithInfos, self.cbTag, queue_size=1)
+        self.sub_route = rospy.Subscriber("/route", numpy.array, self.setRoute, queue_size=1)
 
         # Read parameters
         self.pub_timestep = self.setupParameter("~pub_timestep", 1.0)
@@ -41,6 +44,9 @@ class RandomAprilTagTurnsNode(object):
         rospy.loginfo("[%s] Initialzed." % (self.node_name))
 
         self.rate = rospy.Rate(30)  # 10hz
+
+    def setRoute(self, nparray):
+        self.route = nparray
 
     def cbMode(self, mode_msg):
         #print mode_msg
@@ -87,12 +93,12 @@ class RandomAprilTagTurnsNode(object):
                         randomIndex = numpy.random.randint(len(availableTurns)) # по часовой
                         chosenTurn = availableTurns[randomIndex]
                         if randomIndex == 1:
-                            self.cur_road = self.cur_road.Road1
+                            self.pub_turn.publish(np.array([1]))
                         if randomIndex == 0:
-                            self.cur_road = self.cur_road.Road2
+                            self.pub_turn.publish(np.array([2]))
                     else:
                         chosenTurn = availableTurns[::-1][self.route[0]-1]
-                        self.route.pop(0)
+                        del self.route[0]
                     self.turn_type = chosenTurn
                     self.pub_turn_type.publish(self.turn_type)
 

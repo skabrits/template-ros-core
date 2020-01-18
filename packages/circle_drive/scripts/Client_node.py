@@ -50,4 +50,4 @@ class Client:
                 await self.writer.wait_closed()
                 break
 
-c = Client(('172.31.1.250', 8080))
+c = Client(('172.31.1.147', 8080))

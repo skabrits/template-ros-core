@@ -5,7 +5,7 @@ from std_msgs.msg import String
 
 rospy.init_node('client_node')
 
-pub=rospy.Publisher('/coord',String,queue_size=1)
+pub = rospy.Publisher('/coord',String,queue_size=1)
 sleep(1)
 
 
@@ -16,8 +16,8 @@ class Client:
         self.start_con()
 
     def start_con(self):
-	self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	self.s.connect((self.server[0], self.server[1]))
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((self.server[0], self.server[1]))
 
         while True:
             try:

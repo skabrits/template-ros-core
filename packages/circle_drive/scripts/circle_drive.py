@@ -152,7 +152,7 @@ def get_filtered_contours(img, contour_type):
             if road != 'Not on the road':
                 route = sg.find_route(cur_road, road.id)
                 s = ""
-                for i in range(route):
+                for i in range(len(route)):
                     s += route[i]
                 pub_route.publish(s)
                 msg = Joy()
@@ -260,6 +260,7 @@ def getCoord(string):
     global x, y
     x = float(s1)
     y = float(s2)
+    rospy.loginfo("got dot")
     if stopped:
         road = sg.det_points_road(x, y, Rmap)
         if road != 'Not on the road':

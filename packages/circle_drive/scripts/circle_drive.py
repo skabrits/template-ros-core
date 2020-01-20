@@ -162,8 +162,7 @@ def get_filtered_contours(img, contour_type):
                 msg.header.frame_id = ''
                 msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
                 msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                msg.buttons[6] = 1
-                msg.axes[1] = -1
+                msg.buttons[7] = 1
                 pub_stop.publish(msg)
             else:
                 rospy.loginfo("WARNING: requested dot is not on the road")
@@ -269,6 +268,14 @@ def getCoord(string):
             for i in range(route):
                 s += route[i]
             pub_route.publish(s)
+            msg = Joy()
+            msg.header.seq = 0
+            msg.header.stamp.secs = 0
+            msg.header.stamp.nsecs = 0
+            msg.header.frame_id = ''
+            msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            msg.buttons[7] = 1
         else:
             rospy.loginfo("WARNING: requested dot is not on the road")
 

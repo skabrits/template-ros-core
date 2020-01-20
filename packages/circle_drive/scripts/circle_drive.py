@@ -134,6 +134,15 @@ def get_filtered_contours(img, contour_type):
         msg.axes[1] = -1
         pub_stop.publish(msg)
 
+        msg = Joy()
+        msg.header.seq = 0
+        msg.header.stamp.secs = 0
+        msg.header.stamp.nsecs = 0
+        msg.header.frame_id = ''
+        msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        pub_stop.publish(msg)
+
         msg = Twist2DStamped()
         msg.v = 0.0
         msg.omega = 0.0

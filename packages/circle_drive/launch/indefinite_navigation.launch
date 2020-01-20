@@ -31,6 +31,7 @@
 		<!--<arg name="obstacle_avoidance_and_detection" value="true" />-->
 
 	</include>
-	<node name="circle_drive" pkg="circle_drive" type="circle_drive.py" output="screen" 			required="true"/>
-	<node name="client" pkg="circle_drive" type="client_node.py" output="screen" 			required="true"/>
+	<node name="client_node" pkg="circle_drive" type="client_node.py" output="screen" required="true"/>
+	<node name="circle_drive" pkg="circle_drive" type="circle_drive.py" output="screen" required="true"/>
+	
 </launch>

@@ -2,8 +2,10 @@ import socket
 
 import rospy
 from std_msgs.msg import String
-rospy.init_node('server_the_node')
-pub=rospy.Publisher('/coord',String,queue_size=1)
+
+rospy.init_node('client_node')
+
+pub = rospy.Publisher('/coord',String,queue_size=1)
 sleep(1)
 
 
@@ -14,8 +16,8 @@ class Client:
         self.start_con()
 
     def start_con(self):
-	self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	self.s.connect((self.server[0], self.server[1]))
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((self.server[0], self.server[1]))
 
         while True:
             try:
@@ -31,15 +33,15 @@ class Client:
                 #self.writer.write(bytes((message+"\n"), "Utf-8"))
                 #await self.writer.drain()
                 #data = await self.reader.read(100)
-		data = sock.recv(1024)
+                data = sock.recv(1024)
                 rospy.loginfo(data.decode())
-		command = str(data.decode())[:-1].split(" ")
+                command = str(data.decode())[:-1].split(" ")
 
-		if len(command) > 0:
-			if command[0] == "///":
-				msg=String()
-				msg.data = command[1] + " " + command[2]
-				pub.publish(msg)
+                if len(command) > 0:
+                    if command[0] == "///":
+                        msg=String()
+                        msg.data = command[1] + " " + command[2]
+                        pub.publish(msg)
 				
 				
 

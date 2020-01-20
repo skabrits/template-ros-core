@@ -265,7 +265,7 @@ def getCoord(string):
 
 
 sub_image = rospy.Subscriber("/duckpi4/camera_node/image/raw", Image, makeImageWithCones, queue_size=1)
-sub_turn = rospy.Subscriber("/turn", String, makeTurn, queue_size=1)
+sub_turn = rospy.Subscriber("/turn", String, makeTurn, queue_size=5)
 sub_coord = rospy.Subscriber("/coord", String, getCoord, queue_size=1)
 
 rospy.spin()

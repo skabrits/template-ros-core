@@ -34,7 +34,7 @@ class Client:
                 #self.writer.write(bytes((message+"\n"), "Utf-8"))
                 #await self.writer.drain()
                 #data = await self.reader.read(100)
-                data = sock.recv(1024)
+                data = self.s.recv(1024)
                 rospy.loginfo(data.decode())
                 command = str(data.decode())[:-1].split(" ")
 
@@ -43,11 +43,8 @@ class Client:
                         msg=String()
                         msg.data = command[1] + " " + command[2]
                         pub.publish(msg)
-				
-				
-
             except Exception as ex:
-                rospy.loginfo("Closed due to the error\n", ex)
+                rospy.loginfo("Closed due to the error\n" + str(ex))
                 rospy.loginfo('Close the connection')
                 self.s.close()
                 break

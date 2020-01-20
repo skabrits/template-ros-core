@@ -153,7 +153,7 @@ def get_filtered_contours(img, contour_type):
                 route = sg.find_route(cur_road, road.id)
                 s = ""
                 for i in range(len(route)):
-                    s += route[i]
+                    s += str(route[i])
                 pub_route.publish(s)
                 msg = Joy()
                 msg.header.seq = 0
@@ -265,8 +265,8 @@ def getCoord(string):
         if road != 'Not on the road':
             route = sg.find_route(cur_road, road.id)
             s = ""
-            for i in range(route):
-                s += route[i]
+            for i in range(len(route)):
+                s += str(route[i])
             pub_route.publish(s)
             msg = Joy()
             msg.header.seq = 0

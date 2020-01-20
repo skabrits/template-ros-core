@@ -4,11 +4,11 @@ import socket
 import rospy
 from std_msgs.msg import String
 
+
 rospy.init_node('client_node')
 
 pub = rospy.Publisher('/coord',String,queue_size=1)
-sleep(1)
-
+# sleep(1)
 
 
 class Client:

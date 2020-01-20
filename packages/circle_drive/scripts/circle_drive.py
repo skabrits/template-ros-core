@@ -123,30 +123,28 @@ def get_filtered_contours(img, contour_type):
     global stopped, x, y
     if len(filtered_contours) > 0:
         rospy.loginfo("duck detected, stopping")
-        msg = Joy()
-        msg.header.seq = 0
-        msg.header.stamp.secs = 0
-        msg.header.stamp.nsecs = 0
-        msg.header.frame_id = ''
-        msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        msg.buttons[6] = 1
-        msg.axes[1] = -1
+        axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        buttons[6] = 1
+        msg = Joy(header=None, axes=axes, buttons=buttons)
+        # msg.axes[1] = -1
         pub_stop.publish(msg)
+        rospy.sleep(0.5)
 
-        msg = Joy()
-        msg.header.seq = 0
-        msg.header.stamp.secs = 0
-        msg.header.stamp.nsecs = 0
-        msg.header.frame_id = ''
-        msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        pub_stop.publish(msg)
+        # msg = Joy()
+        # msg.header.seq = 0
+        # msg.header.stamp.secs = 0
+        # msg.header.stamp.nsecs = 0
+        # msg.header.frame_id = ''
+        # msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        # msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # msg.buttons[6] = 1
+        # pub_stop.publish(msg)
 
-        msg = Twist2DStamped()
-        msg.v = 0.0
-        msg.omega = 0.0
-        pub_move.publish(msg)
+        # msg = Twist2DStamped()
+        # msg.v = 0.0
+        # msg.omega = 0.0
+        # pub_move.publish(msg)
 
         stopped = True
         if x != -1.0:
@@ -157,6 +155,16 @@ def get_filtered_contours(img, contour_type):
                 for i in range(route):
                     s += route[i]
                 pub_route.publish(s)
+                msg = Joy()
+                msg.header.seq = 0
+                msg.header.stamp.secs = 0
+                msg.header.stamp.nsecs = 0
+                msg.header.frame_id = ''
+                msg.axes = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                msg.buttons = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                msg.buttons[6] = 1
+                msg.axes[1] = -1
+                pub_stop.publish(msg)
             else:
                 rospy.loginfo("WARNING: requested dot is not on the road")
 

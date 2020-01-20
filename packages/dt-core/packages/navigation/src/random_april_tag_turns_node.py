@@ -27,7 +27,7 @@ class RandomAprilTagTurnsNode(object):
         # self.pub_topic_a = rospy.Publisher("~topic_a",String, queue_size=1)
         self.pub_turn_type = rospy.Publisher("~turn_type",Int16, queue_size=1, latch=True)
         self.pub_id_and_type = rospy.Publisher("~turn_id_and_type",TurnIDandType, queue_size=1, latch=True)
-        self.pub_turn = rospy.Publisher("/turn", String, queue_size=1)
+        # self.pub_turn = rospy.Publisher("/turn", String, queue_size=1)
 
         # Setup subscribers
         # self.sub_topic_b = rospy.Subscriber("~topic_b", String, self.cbTopic)
@@ -99,10 +99,10 @@ class RandomAprilTagTurnsNode(object):
                     if len(self.route) == 0:
                         randomIndex = numpy.random.randint(len(availableTurns)) # по часовой
                         chosenTurn = availableTurns[randomIndex]
-                        if randomIndex == 1:
-                            self.pub_turn.publish("1")
-                        if randomIndex == 0:
-                            self.pub_turn.publish("2")
+                        # if randomIndex == 1:
+                        #     self.pub_turn.publish("1")
+                        # if randomIndex == 0:
+                        #     self.pub_turn.publish("2")
                     else:
                         chosenTurn = availableTurns[::-1][self.route[0]-1]
                         del self.route[0]

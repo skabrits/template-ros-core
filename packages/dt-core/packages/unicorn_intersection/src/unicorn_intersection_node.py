@@ -37,6 +37,7 @@ class UnicornIntersectionNode(object):
         self.pub_LF_params = rospy.Publisher("~lane_filter_params", String, queue_size=1)
         self.pub_lane_pose = rospy.Publisher("~lane_pose_out", LanePose, queue_size=1)
         self.pub_int_done_detailed = rospy.Publisher("~intersection_done_detailed", TurnIDandType, queue_size=1)
+        self.pub_turn = rospy.Publisher("/turn", String, queue_size=1)
 
         ## update Parameters timer
         self.params_update = rospy.Timer(rospy.Duration.from_sec(1.0), self.updateParams)
@@ -66,6 +67,10 @@ class UnicornIntersectionNode(object):
 
         tag_id = self.tag_id
         turn_type = self.turn_type
+
+        rospy.loginfo("TURN TYPE: " + str(turn_type))
+        self.pub_turn.publish(str(turn_type+1))
+
 
         sleeptimes = [self.time_left_turn, self.time_straight_turn, self.time_right_turn]
         LFparams = [self.LFparams_left, self.LFparams_straight, self.LFparams_right]

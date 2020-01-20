@@ -234,6 +234,8 @@ def makeTurn(string):
     else:
         cur_road = cur_road.Road2
 
+    rospy.loginfo("current road id: " + str(cur_road.id))
+
 
 def getCoord(string):
     string = string.data
